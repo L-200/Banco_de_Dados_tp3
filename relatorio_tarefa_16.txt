@@ -1,0 +1,40 @@
+BANCO DE DADOS 1 - TRABALHO 3 - TAREFA 14
+============================================================
+
+CENÁRIO: 16.a) Votes < 1000 (muitos filmes)
+QUERY: SELECT title FROM movie WHERE votes < 1000;
+------------------------------
+Index Scan using movie_votes on movie  (cost=0.28..20.02 rows=328 width=16) (actual time=0.008..0.037 rows=326 loops=1)
+                                                                                             Index Cond: (votes < 1000)
+                                                                                                Planning Time: 0.019 ms
+                                                                                               Execution Time: 0.047 ms
+
+============================================================
+
+CENÁRIO: 16.b) Votes > 4000 (poucos filmes)
+QUERY: SELECT title FROM movie WHERE votes > 40000;
+------------------------------
+Index Scan using movie_votes on movie  (cost=0.28..8.42 rows=8 width=16) (actual time=0.005..0.006 rows=4 loops=1)
+                                                                                       Index Cond: (votes > 40000)
+                                                                                           Planning Time: 0.045 ms
+                                                                                          Execution Time: 0.012 ms
+
+============================================================
+
+ANÁLISE E RESPOSTAS:
+------------------------------
+
+
+a) Hipótese Uniforme:
+O PostgreSQL não utilizou uma hipótese uniforme global. As estimativas apresentadas 
+no EXPLAIN (rows=328 e rows=8) ficaram muito próximas dos valores reais (326 e 4), o que 
+mostra que o otimizador consultou estatísticas reais armazenadas em pg_stats, como histogramas 
+e valores mais comuns. No entanto, dentro de cada intervalo (bucket) do histograma, o 
+PostgreSQL assume distribuição uniforme, e essa combinação de histogramas reais mais uniformidade interna 
+explica por que as estimativas ficaram tão próximas dos valores observados.
+
+b) Menor Seletividade:
+A consulta "votes < 1000" possui a menor seletividade.
+  Alta seletividade significa filtrar muito e retornar poucos dados (como "votes > 40000").
+  Baixa seletividade significa filtrar pouco e retornar muitos dados (como "votes < 1000").
+

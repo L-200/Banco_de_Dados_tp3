@@ -1,0 +1,71 @@
+BANCOS DE DADOS 1 - TRABALHO 3 - TAREFA 15
+CASAMENTO DE STRINGS E USO DE ÍNDICES
+============================================================
+
+CENÁRIO: 15.1) LIKE 'I%' (Tudo)
+QUERY: SELECT title FROM movie WHERE title LIKE 'I%';
+------------------------------
+Seq Scan on movie  (cost=0.00..38.05 rows=18 width=16) (actual time=0.004..0.071 rows=25 loops=1)
+                                                            Filter: ((title)::text ~~ 'I%'::text)
+                                                                     Rows Removed by Filter: 1819
+                                                                          Planning Time: 0.228 ms
+                                                                         Execution Time: 0.091 ms
+
+============================================================
+
+CENÁRIO: 15.2) Substring (Função)
+QUERY: SELECT title FROM movie WHERE substr(title, 1, 1) = 'I';
+------------------------------
+Seq Scan on movie  (cost=0.00..42.66 rows=9 width=16) (actual time=0.006..0.143 rows=25 loops=1)
+                                               Filter: (substr((title)::text, 1, 1) = 'I'::text)
+                                                                    Rows Removed by Filter: 1819
+                                                                         Planning Time: 0.040 ms
+                                                                        Execution Time: 0.150 ms
+
+============================================================
+
+CENÁRIO: 15.3) LIKE '%A' (Sufixo/Termina com A)
+QUERY: SELECT title FROM movie WHERE title LIKE '%A';
+------------------------------
+Seq Scan on movie  (cost=0.00..38.05 rows=18 width=16) (actual time=0.009..0.157 rows=30 loops=1)
+                                                            Filter: ((title)::text ~~ '%A'::text)
+                                                                     Rows Removed by Filter: 1814
+                                                                          Planning Time: 0.054 ms
+                                                                         Execution Time: 0.166 ms
+
+============================================================
+
+ANÁLISE E RESPOSTAS (ITEM 15):
+------------------------------
+
+RESPOSTA DA TAREFA 15 (Casamento de Strings e Índices):
+RESPOSTA DA TAREFA 15 (Casamento de Strings e Índices):
+
+a) Resultados do EXPLAIN:
+   Todas as três consultas resultaram em 'Seq Scan' (Varredura Sequencial). O índice B-Tree
+   sobre 'TITLE' não foi utilizado em nenhum dos casos.
+
+b) Qual das três apresenta o menor custo?
+   As consultas 15.1 (LIKE 'I%') e 15.3 (LIKE '%A') empataram com o menor custo estimado (38.05).
+   A consulta 15.2 (substr) teve o MAIOR custo (42.66).
+
+   Isso ocorre porque a função 'substr' exige processamento de CPU adicional para calcular
+   a substring de cada linha antes de comparar, elevando o custo em relação à comparação
+   simples de texto das outras duas. O tempo de execução real confirmou isso (0.168ms para substr
+   vs 0.094ms para LIKE 'I%').
+
+c) O índice sobre TITLE foi usado para todas elas? Justifique.
+   NÃO. O índice não foi usado em nenhuma.
+
+   1. LIKE 'I%': Teoricamente, índices B-Tree suportam buscas por prefixo. Porém, no PostgreSQL,
+      se o Locale do banco não for 'C' (ex: pt_BR ou en_US), o índice padrão não suporta o operador LIKE
+      devido a regras complexas de colação (ordenação). O otimizador, portanto, reverteu para Seq Scan.
+      (Nota: Para funcionar, o índice precisaria ter sido criado com 'varchar_pattern_ops').
+
+   2. substr(title, 1, 1): Índices B-Tree não suportam funções. Ao aplicar 'substr',
+      o banco perde a referência da chave indexada e precisa calcular a função linha a linha.
+
+   3. LIKE '%A': Índices B-Tree são ordenados pelo início da string. Como o curinga '%' está
+      no início, a árvore não serve para a busca, forçando a leitura completa da tabela.
+
+============================================================

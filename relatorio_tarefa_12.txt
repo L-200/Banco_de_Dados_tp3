@@ -1,0 +1,40 @@
+BANCOS DE DADOS 1 - TRABALHO 3 - TAREFA 12
+============================================================
+
+CENÁRIO: 12.a) Consulta Pequena (<10 tuplas)
+QUERY SQL: SELECT title, votes FROM movie WHERE votes > 45000;
+------------------------------
+Index Scan using movie_votes on movie  (cost=0.28..8.37 rows=5 width=20) (actual time=0.004..0.004 rows=1 loops=1)
+                                                                                       Index Cond: (votes > 45000)
+                                                                                           Planning Time: 0.177 ms
+                                                                                          Execution Time: 0.018 ms
+
+============================================================
+
+CENÁRIO: 12.b) Consulta Grande (>80% das tuplas)
+QUERY SQL: SELECT title, votes FROM movie WHERE votes > 10;
+------------------------------
+Seq Scan on movie  (cost=0.00..38.05 rows=1844 width=20) (actual time=0.004..0.130 rows=1844 loops=1)
+                                                                                 Filter: (votes > 10)
+                                                                              Planning Time: 0.026 ms
+                                                                             Execution Time: 0.170 ms
+
+============================================================
+
+ANÁLISE TEÓRICA (ITEM 12.c):
+------------------------------
+
+RESPOSTA DA QUESTÃO 12.c:
+
+O índice sobre o atributo VOTES não é utilizado em todas as consultas porque o otimizador
+do PostgreSQL (Query Planner) avalia o custo total da operação.
+
+1. Para consultas seletivas (poucas tuplas, <10), o custo de navegar na estrutura
+   de árvore do índice (Index Scan) é baixo, e vale a pena para evitar ler a tabela toda.
+
+2. Para consultas abrangentes (>80% das tuplas), o uso do índice geraria muitas operações
+   de I/O aleatório (pular do índice para a tabela milhares de vezes). Nesse caso,
+   é muito mais barato fazer um 'Sequential Scan' (ler a tabela inteira sequencialmente),
+   aproveitando o cache do SO e a leitura em blocos contíguos.
+
+============================================================
