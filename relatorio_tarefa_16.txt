@@ -4,10 +4,10 @@ BANCO DE DADOS 1 - TRABALHO 3 - TAREFA 14
 CENÁRIO: 16.a) Votes < 1000 (muitos filmes)
 QUERY: SELECT title FROM movie WHERE votes < 1000;
 ------------------------------
-Index Scan using movie_votes on movie  (cost=0.28..20.02 rows=328 width=16) (actual time=0.008..0.037 rows=326 loops=1)
+Index Scan using movie_votes on movie  (cost=0.28..20.02 rows=328 width=16) (actual time=0.008..0.048 rows=326 loops=1)
                                                                                              Index Cond: (votes < 1000)
-                                                                                                Planning Time: 0.019 ms
-                                                                                               Execution Time: 0.047 ms
+                                                                                                Planning Time: 0.028 ms
+                                                                                               Execution Time: 0.060 ms
 
 ============================================================
 
@@ -16,7 +16,7 @@ QUERY: SELECT title FROM movie WHERE votes > 40000;
 ------------------------------
 Index Scan using movie_votes on movie  (cost=0.28..8.42 rows=8 width=16) (actual time=0.005..0.006 rows=4 loops=1)
                                                                                        Index Cond: (votes > 40000)
-                                                                                           Planning Time: 0.045 ms
+                                                                                           Planning Time: 0.039 ms
                                                                                           Execution Time: 0.012 ms
 
 ============================================================

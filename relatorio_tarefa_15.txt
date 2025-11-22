@@ -5,33 +5,33 @@ CASAMENTO DE STRINGS E USO DE ÍNDICES
 CENÁRIO: 15.1) LIKE 'I%' (Tudo)
 QUERY: SELECT title FROM movie WHERE title LIKE 'I%';
 ------------------------------
-Seq Scan on movie  (cost=0.00..38.05 rows=18 width=16) (actual time=0.004..0.071 rows=25 loops=1)
+Seq Scan on movie  (cost=0.00..38.05 rows=18 width=16) (actual time=0.009..0.114 rows=25 loops=1)
                                                             Filter: ((title)::text ~~ 'I%'::text)
                                                                      Rows Removed by Filter: 1819
-                                                                          Planning Time: 0.228 ms
-                                                                         Execution Time: 0.091 ms
+                                                                          Planning Time: 0.308 ms
+                                                                         Execution Time: 0.134 ms
 
 ============================================================
 
 CENÁRIO: 15.2) Substring (Função)
 QUERY: SELECT title FROM movie WHERE substr(title, 1, 1) = 'I';
 ------------------------------
-Seq Scan on movie  (cost=0.00..42.66 rows=9 width=16) (actual time=0.006..0.143 rows=25 loops=1)
+Seq Scan on movie  (cost=0.00..42.66 rows=9 width=16) (actual time=0.007..0.148 rows=25 loops=1)
                                                Filter: (substr((title)::text, 1, 1) = 'I'::text)
                                                                     Rows Removed by Filter: 1819
-                                                                         Planning Time: 0.040 ms
-                                                                        Execution Time: 0.150 ms
+                                                                         Planning Time: 0.055 ms
+                                                                        Execution Time: 0.155 ms
 
 ============================================================
 
 CENÁRIO: 15.3) LIKE '%A' (Sufixo/Termina com A)
 QUERY: SELECT title FROM movie WHERE title LIKE '%A';
 ------------------------------
-Seq Scan on movie  (cost=0.00..38.05 rows=18 width=16) (actual time=0.009..0.157 rows=30 loops=1)
+Seq Scan on movie  (cost=0.00..38.05 rows=18 width=16) (actual time=0.006..0.106 rows=30 loops=1)
                                                             Filter: ((title)::text ~~ '%A'::text)
                                                                      Rows Removed by Filter: 1814
-                                                                          Planning Time: 0.054 ms
-                                                                         Execution Time: 0.166 ms
+                                                                          Planning Time: 0.039 ms
+                                                                         Execution Time: 0.111 ms
 
 ============================================================
 

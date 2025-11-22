@@ -4,31 +4,31 @@ BANCO DE DADOS 1 - TRABALHO 3 - TAREFA 13
 CENÁRIO: Consulta A - Usando MAX
 QUERY: SELECT title FROM movie WHERE votes >= (SELECT MAX(votes) FROM movie);
 ------------------------------
-                                            Index Scan using movie_votes on movie  (cost=0.61..35.37 rows=615 width=16) (actual time=0.009..0.010 rows=1 loops=1)
+                                            Index Scan using movie_votes on movie  (cost=0.61..35.37 rows=615 width=16) (actual time=0.019..0.021 rows=1 loops=1)
                                                                                                                                         Index Cond: (votes >= $1)
                                                                                                                                           InitPlan 2 (returns $1)
-                                                                           ->  Result  (cost=0.32..0.33 rows=1 width=4) (actual time=0.005..0.006 rows=1 loops=1)
+                                                                           ->  Result  (cost=0.32..0.33 rows=1 width=4) (actual time=0.012..0.013 rows=1 loops=1)
                                                                                                                                           InitPlan 1 (returns $0)
-                                                                            ->  Limit  (cost=0.28..0.32 rows=1 width=4) (actual time=0.004..0.004 rows=1 loops=1)
-                  ->  Index Only Scan Backward using movie_votes on movie movie_1  (cost=0.28..76.55 rows=1844 width=4) (actual time=0.004..0.004 rows=1 loops=1)
+                                                                            ->  Limit  (cost=0.28..0.32 rows=1 width=4) (actual time=0.010..0.010 rows=1 loops=1)
+                  ->  Index Only Scan Backward using movie_votes on movie movie_1  (cost=0.28..76.55 rows=1844 width=4) (actual time=0.009..0.009 rows=1 loops=1)
                                                                                                                                   Index Cond: (votes IS NOT NULL)
                                                                                                                                                   Heap Fetches: 0
-                                                                                                                                          Planning Time: 0.039 ms
-                                                                                                                                         Execution Time: 0.016 ms
+                                                                                                                                          Planning Time: 0.074 ms
+                                                                                                                                         Execution Time: 0.033 ms
 
 ============================================================
 
 CENÁRIO: Consulta B - Usando ALL
 QUERY: SELECT title FROM movie WHERE votes >= ALL (SELECT votes FROM movie);
 ------------------------------
-                      Seq Scan on movie  (cost=0.00..43620.99 rows=922 width=16) (actual time=0.526..0.832 rows=1 loops=1)
+                      Seq Scan on movie  (cost=0.00..43620.99 rows=922 width=16) (actual time=0.706..1.144 rows=1 loops=1)
                                                                                                        Filter: (SubPlan 1)
                                                                                               Rows Removed by Filter: 1843
                                                                                                                  SubPlan 1
                         ->  Materialize  (cost=0.00..42.66 rows=1844 width=4) (actual time=0.000..0.000 rows=2 loops=1844)
-          ->  Seq Scan on movie movie_1  (cost=0.00..33.44 rows=1844 width=4) (actual time=0.002..0.174 rows=1844 loops=1)
-                                                                                                   Planning Time: 0.057 ms
-                                                                                                  Execution Time: 0.856 ms
+          ->  Seq Scan on movie movie_1  (cost=0.00..33.44 rows=1844 width=4) (actual time=0.002..0.263 rows=1844 loops=1)
+                                                                                                   Planning Time: 0.053 ms
+                                                                                                  Execution Time: 1.168 ms
 
 ============================================================
 
