@@ -1,4 +1,4 @@
-#!/home/lucas/testes_de_compatibilidade/Banco_de_Dados_tp3/.venv/bin/python3
+#!/home/lucas/faculdade/bd/Banco_de_Dados_tp3/.venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
