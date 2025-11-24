@@ -3,3 +3,5 @@ Parte1.ipynb
 tp3_parte2_notebook.ipynb
 # Ignorar o tpch-pgsql
 tpch-pgsql/
+# Ignorar o .venv
+.venv/
